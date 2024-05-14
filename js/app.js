@@ -68,6 +68,8 @@ const consultarAPI = (ciudad, pais) => {
 
 // Mostrar el clima en el html
 const mostrarClima = (data) => {
+  limpiarHTML();
+
   const { name, main: { temp, temp_max, temp_min } } = data;
   const centigrados = kelvinACentigrados(temp);
   const max = kelvinACentigrados(temp_max);
@@ -87,6 +89,13 @@ const mostrarClima = (data) => {
 
 // Convertir de Kelvin a Centigrados
 const kelvinACentigrados = (grados) => parseInt(grados - 273.15);
+
+// Limpia el html previo
+const limpiarHTML = () => {
+  while (resultadoElement.firstChild) {
+    resultadoElement.removeChild(resultadoElement.firstChild);
+  }
+}
 
 // Cargar Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
