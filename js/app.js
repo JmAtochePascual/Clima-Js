@@ -26,7 +26,6 @@ const init = (vent) => {
   formularioElement.reset();
 };
 
-
 // Validar formulario
 const validarFormulario = (ciudad, pais) => [ciudad, pais].includes('') ? false : true;
 
@@ -60,6 +59,7 @@ const consultarAPI = (ciudad, pais) => {
     .then(response => response.json())
     .then(data => {
       if (data.cod === '404') {
+        limpiarHTML();
         mostrarAlerta('Error!', 'Ciudad no encontrada', false);
         return
       };
