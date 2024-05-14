@@ -10,9 +10,11 @@ const containerElement = document.querySelector('.container');
 const init = (vent) => {
   vent.preventDefault();
 
-  // Validar formulario
+  const ciudad = ciudadInputElement.value.trim();
+  const pais = paisInputElement.value.trim();
 
-  if (!validarFormulario()) {
+  // Validar formulario
+  if (!validarFormulario(ciudad, pais)) {
     mostrarAlerta('Error!', 'Todos los campos son obligatorios', false);
     return
   };
@@ -20,12 +22,7 @@ const init = (vent) => {
 
 
 // Validar formulario
-const validarFormulario = () => {
-  const ciudad = ciudadInputElement.value.trim();
-  const pais = paisInputElement.value.trim();
-
-  return [ciudad, pais].includes('') ? false : true;
-};
+const validarFormulario = (ciudad, pais) => [ciudad, pais].includes('') ? false : true;
 
 
 // Mostrar alerta
