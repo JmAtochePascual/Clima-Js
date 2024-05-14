@@ -18,6 +18,9 @@ const init = (vent) => {
     mostrarAlerta('Error!', 'Todos los campos son obligatorios', false);
     return
   };
+
+  // Consultar API
+  consultarAPI(ciudad, pais);
 };
 
 
@@ -45,6 +48,20 @@ const mostrarAlerta = (initMesage, mensaje, tipo = true) => {
 };
 
 
+// Consultar API
+const consultarAPI = (ciudad, pais) => {
+  const APIKEY = 'bd9f8a2fab2b3fa26d17df27a6ab522e';
+  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad},${pais}&appid=${APIKEY}`;
+
+  fetch(URL)
+    .then(response => response.json())
+    .then(data => {
+      if (data.cod === '404') {
+        mostrarAlerta('Error!', 'Ciudad no encontrada', false);
+        return
+      };
+    });
+};
 
 // Cargar Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
