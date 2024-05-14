@@ -26,6 +26,7 @@ const init = (vent) => {
   formularioElement.reset();
 };
 
+
 // Validar formulario
 const validarFormulario = (ciudad, pais) => [ciudad, pais].includes('') ? false : true;
 
@@ -55,6 +56,8 @@ const consultarAPI = (ciudad, pais) => {
   const APIKEY = 'bd9f8a2fab2b3fa26d17df27a6ab522e';
   const URL = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad},${pais}&appid=${APIKEY}`;
 
+  mostrarSpinner();
+
   fetch(URL)
     .then(response => response.json())
     .then(data => {
@@ -64,10 +67,12 @@ const consultarAPI = (ciudad, pais) => {
         return
       };
 
+
       // Mostrar el clima en el html
       mostrarClima(data);
     });
 };
+
 
 // Mostrar el clima en el html
 const mostrarClima = (data) => {
@@ -90,14 +95,41 @@ const mostrarClima = (data) => {
   resultadoElement.appendChild(climaElement);
 }
 
+
 // Convertir de Kelvin a Centigrados
 const kelvinACentigrados = (grados) => parseInt(grados - 273.15);
+
 
 // Limpia el html previo
 const limpiarHTML = () => {
   while (resultadoElement.firstChild) {
     resultadoElement.removeChild(resultadoElement.firstChild);
   }
+}
+
+// Muestra un spinner de carga
+const mostrarSpinner = () => {
+  limpiarHTML();
+
+  const spinnerElement = document.createElement('div');
+  spinnerElement.classList.add('sk-fading-circle');
+
+  spinnerElement.innerHTML = `
+    <div class="sk-circle1 sk-circle"></div>
+    <div class="sk-circle2 sk-circle"></div>
+    <div class="sk-circle3 sk-circle"></div>
+    <div class="sk-circle4 sk-circle"></div>
+    <div class="sk-circle5 sk-circle"></div>
+    <div class="sk-circle6 sk-circle"></div>
+    <div class="sk-circle7 sk-circle"></div>
+    <div class="sk-circle8 sk-circle"></div>
+    <div class="sk-circle9 sk-circle"></div>
+    <div class="sk-circle10 sk-circle"></div>
+    <div class="sk-circle11 sk-circle"></div>
+    <div class="sk-circle12 sk-circle"></div>
+  `;
+
+  resultadoElement.appendChild(spinnerElement);
 }
 
 // Cargar Event Listeners
