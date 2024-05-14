@@ -60,8 +60,33 @@ const consultarAPI = (ciudad, pais) => {
         mostrarAlerta('Error!', 'Ciudad no encontrada', false);
         return
       };
+
+      // Mostrar el clima en el html
+      mostrarClima(data);
     });
 };
+
+// Mostrar el clima en el html
+const mostrarClima = (data) => {
+  const { name, main: { temp, temp_max, temp_min } } = data;
+  const centigrados = kelvinACentigrados(temp);
+  const max = kelvinACentigrados(temp_max);
+  const min = kelvinACentigrados(temp_min);
+
+  const climaElement = document.createElement('div');
+  climaElement.classList.add('text-center', 'text-white');
+  climaElement.innerHTML = `
+    <p class="font-bold text-2xl">Clima en: ${name}</p>
+    <p class="font-bold text-6xl">${centigrados} &#8451;</p>
+    <p class="font-bold">Max: ${max} &#8451;</p>
+    <p class="font-bold">Min: ${min} &#8451;</p>
+  `;
+
+  resultadoElement.appendChild(climaElement);
+}
+
+// Convertir de Kelvin a Centigrados
+const kelvinACentigrados = (grados) => parseInt(grados - 273.15);
 
 // Cargar Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
