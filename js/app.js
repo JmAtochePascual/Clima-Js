@@ -21,6 +21,9 @@ const init = (vent) => {
 
   // Consultar API
   consultarAPI(ciudad, pais);
+
+  // Resetear formulario
+  formularioElement.reset();
 };
 
 
