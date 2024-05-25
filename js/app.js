@@ -52,25 +52,28 @@ const mostrarAlerta = (initMesage, mensaje, tipo = true) => {
 
 
 // Consultar API
-const consultarAPI = (ciudad, pais) => {
+const consultarAPI = async (ciudad, pais) => {
   const APIKEY = 'bd9f8a2fab2b3fa26d17df27a6ab522e';
   const URL = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad},${pais}&appid=${APIKEY}`;
 
   mostrarSpinner();
 
-  fetch(URL)
-    .then(response => response.json())
-    .then(data => {
-      if (data.cod === '404') {
-        limpiarHTML();
-        mostrarAlerta('Error!', 'Ciudad no encontrada', false);
-        return
-      };
+  try {
+    const response = await fetch(URL);
+    const data = await response.json();
 
+    if (data.cod === '404') {
+      limpiarHTML();
+      mostrarAlerta('Error!', 'Ciudad no encontrada', false);
+      return
+    };
 
-      // Mostrar el clima en el html
-      mostrarClima(data);
-    });
+    // Mostrar el clima en el html
+    mostrarClima(data);
+
+  } catch (error) {
+    console.error(error, "Error en la consulta de la API");
+  }
 };
 
 
