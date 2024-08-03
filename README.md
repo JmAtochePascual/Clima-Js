@@ -61,6 +61,6 @@ Este proyecto está bajo la licencia [MIT](https://opensource.org/licenses/MIT).
 
 ## 🌐 Ver Proyecto en la WEB
 
-Puedes ver el proyecto en funcionamiento [aquí](https://jmatochepacual.github.io/Clima-Js/).
+Puedes ver el proyecto en funcionamiento [aquí](https://jmatochepascual.github.io/Clima-Js/).
 
 Todos los derechos reservados Proyecto Clima 2024 ©.
