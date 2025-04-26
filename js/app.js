@@ -1,118 +1,102 @@
-// Seleccionar elementos del DOM
-const formularioElement = document.querySelector('#formulario');
-const resultadoElement = document.querySelector('#resultado');
-const ciudadInputElement = document.querySelector('#ciudad');
-const paisInputElement = document.querySelector('#pais');
+const formElement = document.querySelector('#formulario');
+const resultElement = document.querySelector('#resultado');
+const cityInputElement = document.querySelector('#ciudad');
+const countryInputELement = document.querySelector('#pais');
 const containerElement = document.querySelector('.container');
 
+const startApp = async (event) => {
+  event.preventDefault();
 
-// Funcion que inicializa la busqueda
-const init = (vent) => {
-  vent.preventDefault();
+  const city = cityInputElement.value.trim();
+  const country = countryInputELement.value.trim();
 
-  const ciudad = ciudadInputElement.value.trim();
-  const pais = paisInputElement.value.trim();
-
-  // Validar formulario
-  if (!validarFormulario(ciudad, pais)) {
-    mostrarAlerta('Error!', 'Todos los campos son obligatorios', false);
-    return
+  if ([city, country].includes('')) {
+    showAlert('Error!', 'Todos los campos son obligatorios', false);
+    return;
   };
 
-  // Consultar API
-  consultarAPI(ciudad, pais);
+  const wheather = await getWeather(city, country);
 
-  // Resetear formulario
-  formularioElement.reset();
+  showWeather(wheather);
+
+  formElement.reset();
+  cityInputElement.focus();
+};
+
+const showAlert = (tag, message, type = true) => {
+  const hasAlert = document.querySelector('.alerta');
+
+  if (hasAlert) return;
+
+  const alertElement = document.createElement('div');
+  alertElement.innerHTML = `<strong class="font-bold">${tag}</strong>  <span>${message}</span>`;
+  alertElement.classList.add('px-4', 'py-3', 'rounded', 'max-w-md', 'mx-auto', 'mt-6', 'text-center', 'alerta');
+
+  type ? alertElement.classList.add('bg-green-100', 'border-green-400', 'text-green-700') : alertElement.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+
+  containerElement.appendChild(alertElement);
+
+  setTimeout(() => {
+    alertElement.remove();
+  }, 3000);
 };
 
 
-// Validar formulario
-const validarFormulario = (ciudad, pais) => [ciudad, pais].includes('') ? false : true;
-
-
-// Mostrar alerta
-const mostrarAlerta = (initMesage, mensaje, tipo = true) => {
-  const alerta = document.querySelector('.alerta');
-
-  if (!alerta) {
-    const alertaElement = document.createElement('div');
-    alertaElement.innerHTML = `<strong class="font-bold">${initMesage}</strong>  <span>${mensaje}</span>`;
-    alertaElement.classList.add('px-4', 'py-3', 'rounded', 'max-w-md', 'mx-auto', 'mt-6', 'text-center', 'alerta');
-
-    tipo ? alertaElement.classList.add('bg-green-100', 'border-green-400', 'text-green-700') : alertaElement.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
-
-    containerElement.appendChild(alertaElement);
-
-    setTimeout(() => {
-      alertaElement.remove();
-    }, 3000);
-  }
-};
-
-
-// Consultar API
-const consultarAPI = async (ciudad, pais) => {
+const getWeather = async (ciudad, pais) => {
   const APIKEY = 'bd9f8a2fab2b3fa26d17df27a6ab522e';
   const URL = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad},${pais}&appid=${APIKEY}`;
 
-  mostrarSpinner();
+  showSpinner();
 
   try {
     const response = await fetch(URL);
-    const data = await response.json();
+    const weather = await response.json();
 
-    if (data.cod === '404') {
-      limpiarHTML();
-      mostrarAlerta('Error!', 'Ciudad no encontrada', false);
-      return
+    if (weather.cod === '404') {
+      cleanHTML();
+      showAlert('Error!', 'Ciudad no encontrada', false);
+      return;
     };
 
-    // Mostrar el clima en el html
-    mostrarClima(data);
+    return weather;
 
   } catch (error) {
     console.error(error, "Error en la consulta de la API");
-  }
+  };
 };
 
 
-// Mostrar el clima en el html
-const mostrarClima = (data) => {
-  limpiarHTML();
+const showWeather = (weather) => {
+  cleanHTML();
 
-  const { name, main: { temp, temp_max, temp_min } } = data;
+  const { name, main: { temp, temp_max, temp_min } } = weather;
   const centigrados = kelvinACentigrados(temp);
   const max = kelvinACentigrados(temp_max);
   const min = kelvinACentigrados(temp_min);
 
-  const climaElement = document.createElement('div');
-  climaElement.classList.add('text-center', 'text-white');
-  climaElement.innerHTML = `
+  const weatherElement = document.createElement('div');
+  weatherElement.classList.add('text-center', 'text-white');
+  weatherElement.innerHTML = `
     <p class="font-bold text-2xl">Clima en: ${name}</p>
     <p class="font-bold text-6xl">${centigrados} &#8451;</p>
     <p class="font-bold">Max: ${max} &#8451;</p>
     <p class="font-bold">Min: ${min} &#8451;</p>
   `;
 
-  resultadoElement.appendChild(climaElement);
-}
+  resultElement.appendChild(weatherElement);
+};
 
 
-// Convertir de Kelvin a Centigrados
 const kelvinACentigrados = (grados) => parseInt(grados - 273.15);
 
+const cleanHTML = () => {
+  while (resultElement.firstChild) {
+    resultElement.removeChild(resultElement.firstChild);
+  };
+};
 
-// Limpia el html previo
-const limpiarHTML = () => {
-  while (resultadoElement.firstChild) {
-    resultadoElement.removeChild(resultadoElement.firstChild);
-  }
-}
-
-// Muestra un spinner de carga
-const mostrarSpinner = () => {
-  limpiarHTML();
+const showSpinner = () => {
+  cleanHTML();
 
   const spinnerElement = document.createElement('div');
   spinnerElement.classList.add('sk-fading-circle');
@@ -132,10 +116,9 @@ const mostrarSpinner = () => {
     <div class="sk-circle12 sk-circle"></div>
   `;
 
-  resultadoElement.appendChild(spinnerElement);
-}
+  resultElement.appendChild(spinnerElement);
+};
 
-// Cargar Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-  formularioElement.addEventListener('submit', init);
+  formElement.addEventListener('submit', startApp);
 });
